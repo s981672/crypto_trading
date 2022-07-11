@@ -1,12 +1,11 @@
 import uvicorn
 from fastapi import FastAPI, Depends
-from routes import account_route, order_route
+from routes import exchange_route
 
 def create_app():
     app = FastAPI()
     
-    app.include_router(account_route.router, tags=["Account"], prefix="/api")
-    app.include_router(order_route.router, tags=["Order"], prefix="/api")
+    app.include_router(exchange_route.router, tags=["Exchange"], prefix="/api")
     return app
 
 
