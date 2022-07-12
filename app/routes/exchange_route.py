@@ -74,7 +74,7 @@ async def delete_order(
 
 @router.get("/orders")
 async def get_orders_info(
-    state: str,
+    state: str = None,
     page: int = 1,
     limit: int = 100,
     states: Union[List[str], None] = Query(default=None),
