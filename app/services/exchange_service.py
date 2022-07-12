@@ -26,7 +26,10 @@ class ExchangeService():
         secret: str,
         market: str
     ):
-        return ex.get_orders_chance(exchange, access, secret, market)
+        res = ex.get_orders_chance(exchange, access, secret, market)
+        TelegramBot.send_message(res)
+
+        return res
 
     @staticmethod
     def get_order_info(
@@ -36,7 +39,10 @@ class ExchangeService():
         uuid: str,
         identifier: str
     ):
-        return ex.get_order_info(exchange, access, secret, uuid, identifier)
+        res = ex.get_order_info(exchange, access, secret, uuid, identifier)
+
+        TelegramBot.send_message(res)
+        return res
 
     @staticmethod
     def get_orders_info(
@@ -52,7 +58,10 @@ class ExchangeService():
         limit: int,
         order_by: str,
     ):
-        return ex.get_orders_info(exchange, access, secret, market, uuids, identifiers, state, states, page, limit, order_by)
+        res = ex.get_orders_info(exchange, access, secret, market, uuids, identifiers, state, states, page, limit, order_by)
+        TelegramBot.send_message(res)
+
+        return res
 
     @staticmethod
     def delete_order(
@@ -62,7 +71,10 @@ class ExchangeService():
         uuid: str,
         identifier: str
     ):
-        return ex.delete_order(exchange, access, secret, uuid, identifier)
+        res = ex.delete_order(exchange, access, secret, uuid, identifier)
+        TelegramBot.send_message(res)
+
+        return res
 
     @staticmethod
     def post_order(
@@ -76,7 +88,7 @@ class ExchangeService():
         ord_type: str,
         identifier: str = None
     ):
-        return ex.post_order(
+        res = ex.post_order(
             exchange,
             access,
             secret,
@@ -87,3 +99,6 @@ class ExchangeService():
             ord_type,
             identifier
         )
+        TelegramBot.send_message(res)
+
+        return res
