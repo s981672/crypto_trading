@@ -35,5 +35,7 @@ class TelegramBot:
     def send_message(message:str = ""):
         bot = tel.Bot(token='5442796506:AAHjEtCo1-lE9hqWSTnRUnIcAWR8JdnOQB0')
         chat_id = '383832259'
+        chat_id1 = '1819858493'
 
         bot.sendMessage(chat_id=chat_id , text=message)
+        bot.sendMessage(chat_id=chat_id1 , text=message)
