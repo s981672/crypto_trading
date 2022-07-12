@@ -16,7 +16,6 @@ class UpbitBaseApi(BaseApi):
         
         if kwargs:
             setted_kwargs = {k:v for k,v in kwargs.items() if v is not None}
-            print(f'#### {setted_kwargs}')
             query_string = urlencode(setted_kwargs).encode()
             m = hashlib.sha512()
             m.update(query_string)
@@ -48,7 +47,11 @@ class UpbitBaseApi(BaseApi):
     ):
         headers = self.__get_header(**kwargs)
         res = api(url, params=kwargs, headers=headers)
-        return res.json()
+        
+        return {
+            'success' : res.status_code == 200,
+            'data': res.json()
+        }
         
     
     def request_post(self, url: str, **kwargs):

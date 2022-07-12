@@ -19,3 +19,6 @@ class InvalidMarketNameError(BaseExchangeError):
     name = "Invalid Market Name Error"
     code = 600
     message = "마켓 이름이 잘못 되었습니다."
+    
+class ExchangeAPIError(BaseExchangeError):
+    name = "Exchange API Error"

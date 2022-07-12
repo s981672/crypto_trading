@@ -1,4 +1,3 @@
-from email.policy import default
 from typing import List, Optional, Union
 from fastapi import APIRouter, Query
 from isort import stream
