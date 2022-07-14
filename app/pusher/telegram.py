@@ -29,13 +29,21 @@
 
 import telegram as tel
 
-class TelegramBot:
+class TelegramBot():
+    last_update_id: int = -1
     
-    @staticmethod
-    def send_message(message:str = ""):
-        bot = tel.Bot(token='5442796506:AAHjEtCo1-lE9hqWSTnRUnIcAWR8JdnOQB0')
-        chat_id = '383832259'
-        chat_id1 = '1819858493'
+    def __init__(self):
+        self._bot = tel.Bot(token='5442796506:AAHjEtCo1-lE9hqWSTnRUnIcAWR8JdnOQB0')
+        self._chat_ids = ['383832259', '1819858493']
+    
+    def send_message(self, message:str = ""):
+        for chat_id in self._chat_ids:
+            self._bot.sendMessage(chat_id, message)
 
-        bot.sendMessage(chat_id=chat_id , text=message)
-        bot.sendMessage(chat_id=chat_id1 , text=message)
+    def get_update(self):
+        update = self._bot.get_updates()
+        message_id = update[-1]['message']['message_id']
+        if message_id is not self.last_update_id:
+            self.last_update_id = message_id
+            print(f'Message Update : {self.last_update_id}')
+        

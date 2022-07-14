@@ -6,6 +6,7 @@ import uuid
 
 import jwt
 import requests
+from exchanges.common.const import HTTPCode
 from exchanges.api.base_api import BaseApi
 
 
@@ -81,7 +82,7 @@ class UpbitBaseApi(BaseApi):
         print(f'HTTP STATUS_CODE : {res.status_code}')
         
         return {
-            'success' : res.status_code == 200,
+            'success' : res.status_code in [HTTPCode.HTTP_200_OK, HTTPCode.HTTP_201_CREATED],
             'data': res.json()
         }
         

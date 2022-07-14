@@ -11,4 +11,4 @@ class UpbitUrl:
     
     
 class BinanceUrl:
-    TEST_URL: str = "https://api.upbit.com"
+    pass
