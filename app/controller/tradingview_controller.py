@@ -63,7 +63,7 @@ class TradingViewController:
             print("### locked volume is not exist")
             return
         
-        if strategy.locked_volume is not None and Strategy.locked_volume == "0.0":
+        if strategy.locked_volume is not None and strategy.locked_volume == "0.0":
             print("### locked volume is 0.0")
             return
         
