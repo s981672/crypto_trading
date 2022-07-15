@@ -121,7 +121,7 @@ class ExchangeApi(UpbitBaseApi):
         volume: str,
         price: str,
         ord_type: str,
-        identifier: str
+        identifier: str = None
     ):
         """
         주문 요청

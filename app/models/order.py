@@ -20,15 +20,15 @@ class OrderInfo(BaseModel):
     state : str
     market : str
     created_at : str
-    volume : str
-    remaining_volume : str
+    volume : str = None
+    remaining_volume : str = None
     reserved_fee : str
     remaining_fee : str
     paid_fee : str
     locked : str
     executed_volume : str
     trades_count : int
-    trades : List[Trade]
+    trades : List[Trade] = None
         
 
 class Order(BaseModel):
@@ -38,4 +38,7 @@ class Order(BaseModel):
     created_at : str
     updated_at : str
     order : OrderInfo
+    state : str
+    expected_price : str = None
+    funds : str = None
     

@@ -29,6 +29,7 @@ def create_strategy(user_id, strategy_id, weight, budget, volume):
     client = MongoDBHandler()
     
     strategy = Strategy(
+        strategy_id=strategy_id,
         created_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         updated_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         user_id=user_id,

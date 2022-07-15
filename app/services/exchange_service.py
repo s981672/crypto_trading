@@ -2,6 +2,8 @@
 
 from copy import copy, deepcopy
 from typing import List
+from controller.tradingview_controller import TradingViewController
+from models.trading_view_event import TradingViewEvent
 from models.strategy import Strategy
 from dao import strategy_dao
 from database.mongodb_handler import MongoDBHandler
@@ -41,6 +43,19 @@ class ExchangeService():
         identifier: str
     ):
         res = ex.get_order_info(exchange, access, secret, uuid, identifier)
+
+        # event = {
+        #     "strategy_id" : "B000000",
+        #     "ticker" : "BTCKRW",
+        #     "order_id" : "Long#1",
+        #     "action" : "sell",
+        #     "contracts" : "0.003464",
+        #     "price" : "27120000",
+        #     "position_size" : "0.006928"
+        # }
+
+        # tvEvent = TradingViewEvent(**event)
+        # TradingViewController(event=tvEvent).run()
 
         return res
 
@@ -92,9 +107,9 @@ class ExchangeService():
             secret,
             market,
             side,
+            ord_type,
             volume,
             price,
-            ord_type,
             identifier
         )
         

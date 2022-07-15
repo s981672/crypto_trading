@@ -53,7 +53,7 @@ def get_order_info(
     access: str,
     secret: str,
     uuid: str,
-    identifier: str,    
+    identifier: str = None,    
 ):
     """
     개별 주문 조회
@@ -111,10 +111,10 @@ def post_order(
     secret: str,
     market: str,
     side: str,
-    volume: str,
-    price: str,
     ord_type: str,
-    identifier: str
+    volume: str = None,
+    price: str = None,
+    identifier: str = None
 ):
     """
     주문 요청

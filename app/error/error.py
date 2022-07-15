@@ -100,3 +100,7 @@ class InvalidParamError(BaseError):
     code = 700
     message = "파라미터값이 잘못 되었습니다."
     
+class ExchangeApiError(BaseError):
+    name = "Exchange Api ERROR"
+    code = 701
+    

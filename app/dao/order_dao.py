@@ -7,7 +7,7 @@ from database.mongodb_handler import MongoDBHandler
 from models.order import OrderInfo, Order
 
 
-def get_order(user_id : str = None , strategy_id : str = None, uuid : str = None):
+def get_order(user_id: str = None , strategy_id: str = None, uuid: str = None, state: str = None):
     client = MongoDBHandler()
     
     query = {}
@@ -17,6 +17,8 @@ def get_order(user_id : str = None , strategy_id : str = None, uuid : str = None
         query['strategy_id'] = strategy_id
     if uuid is not None:
         query['uuid'] = uuid
+    if state is not None:
+        query['state'] = state
 
 
     find_items = client.find_items(query, db_name=DBConst.DB_NAME, collection_name=DBConst.ORDERS_COLLECTION_NAME)
@@ -24,7 +26,7 @@ def get_order(user_id : str = None , strategy_id : str = None, uuid : str = None
     
     
 
-def create_order(user_id, strategy_id, order_info):
+def create_order(user_id, strategy_id, order_info, expected_price:str=None):
     if user_id is None or strategy_id is None or order_info is None:
             raise InvalidParamError()
         
@@ -36,14 +38,16 @@ def create_order(user_id, strategy_id, order_info):
         user_id=user_id,
         strategy_id=strategy_id,
         uuid=order_info['uuid'],
-        order=order_info
+        order=order_info,
+        expected_price=expected_price,
+        state="wait"
     )
     
     res = client.insert_item(order.dict(), db_name=DBConst.DB_NAME, collection_name=DBConst.ORDERS_COLLECTION_NAME)
     return order
     
     
-def update_order(user_id, strategy_id, order):
+def update_order(user_id, strategy_id, order, state):
     if user_id is None or strategy_id is None or order is None:
             raise InvalidParamError()
         
@@ -55,6 +59,9 @@ def update_order(user_id, strategy_id, order):
             "order" : order
         }
     }
+    
+    if state is not None:
+        update_value['$set']['state'] = state
     
     condition = {
         "uuid" : order["uuid"]

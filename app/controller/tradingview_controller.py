@@ -1,7 +1,16 @@
 
-from pymongo import MongoClient
-from app.database.mongodb_handler import MongoDBHandler
-from app.models.trading_view_event import TradingViewEvent
+from datetime import datetime
+import time
+from colorama import Cursor
+from pymongo import CursorType, MongoClient
+from pusher.telegram import TelegramBot
+from dao import strategy_dao
+from models.order import Order
+from models.strategy import Strategy
+from dao import order_dao
+from database.mongodb_handler import MongoDBHandler
+from error.error import ExchangeApiError
+from models.trading_view_event import TradingViewEvent
 import exchanges.main as ex
 
 def handle_trading_view_event(self, event):
@@ -31,19 +40,60 @@ class TradingViewController:
         2. 이벤트에 따라 매수/매도를 진행
         3. 타이머를 돌면서 매수/매도 완료 여부를 체크
         """
+        print(f'#### 텔레그램 이벤트 수신 : {self._event}')
+        if self._event.action == "buy":
+            print('#### 매수 이벤트 수신')
+            self.__buy()
+        elif self._event.action == "sell":
+            print("#### 매도 이벤트 수신")
+            self.__sell()
         pass
         
         
     def __sell(self):
-        _volume = '123'
+        # 현재 전략의 locked_volume의 값을 얻어와 매도를 실행
+        cursor = strategy_dao.get_strategy("sungyol", self._event.strategy_id)
+        if cursor is None:
+            print("### stragy is not exist")
+            return
+
+        strategy: Strategy = None
+        for dic in cursor:
+            strategy = Strategy(**dic)
         
-        res = ex.post_order('upbit', self._access, self._secret, 'KRW-BTC', 'ask', _volume)
-        # DB Insert
+        if strategy is None or strategy.locked_volume is None:
+            print("### locked volume is not exist")
+            return
         
-        pass
+        print(f'#### 매도 진행 . volume: {strategy.locked_volume}')
+
+        res = ex.post_order('upbit', self._access, self._secret, 'KRW-BTC', 'ask', ord_type="market", volume=strategy.locked_volume)
+        
+        if 'success' in res and res['success'] is True:
+            print('#### 매도 성공. DB insert')
+            order = order_dao.create_order("sungyol", self._event.strategy_id, res['data'], self._event.price)
+        else:
+            raise ExchangeApiError(message=res['data'])
+
+        self.__check_update_order(order, strategy)
+        
     
-    def __order(self):
-        pass
+    def __buy(self):
+        price = '6000'
+        
+        print('#### 매수 진행 ')
+        res = ex.post_order('upbit', self._access, self._secret, 'KRW-BTC', 'bid', ord_type="price", price=price)
+
+        print('### 매수 응답')
+        print(res)
+        
+        if 'success' in res and res['success'] is True:
+            print('#### 매수 성공. DB insert')
+            order = order_dao.create_order("sungyol", self._event.strategy_id, res['data'], self._event.price)
+        else:
+            raise ExchangeApiError(message=res['data'])
+        
+        self.__check_update_order(order)
 
     def __contract_thread(self, order):
         # UUID를 기반으로 거래 정보를 조회하여 체결 여부 확인
@@ -52,3 +102,60 @@ class TradingViewController:
         # 체결 여부 확인 후 결과를 Telegram으로 전송
         pass
         
+    def __check_update_order(self, order:Order, strategy:Strategy = None):
+        
+        check_completed = False
+        
+        while True:
+            if check_completed is True:
+                break
+            
+            res = ex.get_order_info("upbit", self._access, self._secret, order.uuid)
+            print(res, res['success'], res['data']['state'])
+            if res['success'] is True and (res['data']['state'] == "cancel" or res['data']['state'] == "done"):
+                print('### 거래 결과 정보 수신')
+                order_dao.update_order("sungyol", order.strategy_id, res['data'], "done")
+                
+                locked_volume = res['data']['executed_volume']
+                if strategy is not None:
+                    locked_volume = self.__calc_locked_volume(res['data']['executed_volume'], strategy.locked_volume)
+                strategy_dao.update_strategy("sungyol", order.strategy_id, locked_volume=locked_volume)
+                check_completed = True
+                
+                self.__send_message(order.order.side, 
+                                    order.expected_price, 
+                                    self.__calc_funds(res['data']['trades']),
+                                    res['data']['executed_volume'])
+            else:
+                time.sleep(1)
+                
+    def __calc_locked_volume(self, executed_volume, locked_volume):
+        executed_volume = float(executed_volume)
+        locked_volume = float(locked_volume)
+        clac_volume = locked_volume - executed_volume
+
+        return str(clac_volume)
+    
+    def __calc_funds(self, trades):
+        prices = 0.0
+        if trades is not None:
+            for dic in trades:
+                prices += float(dic['funds'])
+        
+        return str(prices)
+    
+    def __send_message(self, action, expected_price, executed_price, volume):
+        
+        message = []
+        message.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        if action == "bid":
+            message.append("[매수] 실행")
+        elif action == "ask":
+            message.append("[매도] 실행")
+        message.append(f"요청 금액 : {expected_price}")
+        message.append(f"거래 금액 : {executed_price}")
+        message.append(f"거래량 : {volume}")
+        
+        send_message = '\n'.join(message)
+        
+        TelegramBot().send_message(send_message)
