@@ -1,8 +1,6 @@
 
 from datetime import datetime
 import time
-from colorama import Cursor
-from pymongo import CursorType, MongoClient
 from pusher.telegram import TelegramBot
 from dao import strategy_dao
 from models.order import Order
