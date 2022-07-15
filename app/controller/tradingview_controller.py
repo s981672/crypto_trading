@@ -140,7 +140,7 @@ class TradingViewController:
         avg = 0.0
         if trades is not None:
             for dic in trades:
-                prices += float(dic['price'])
+                prices += float(dic['funds'])
             avg = prices / len(trades)
         return str(avg)
     
@@ -148,7 +148,7 @@ class TradingViewController:
         prices = 0.0
         if trades is not None:
             for dic in trades:
-                prices += float(dic['funds'])
+                prices += float(dic['price'])
         
         return str(prices)
     
