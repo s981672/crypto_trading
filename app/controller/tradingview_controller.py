@@ -59,8 +59,12 @@ class TradingViewController:
         for dic in cursor:
             strategy = Strategy(**dic)
         
-        if strategy is None or strategy.locked_volume is None or Strategy.locked_volume == "0.0":
+        if strategy is None or strategy.locked_volume is None:
             print("### locked volume is not exist")
+            return
+        
+        if strategy.locked_volume is not None and Strategy.locked_volume == "0.0":
+            print("### locked volume is 0.0")
             return
         
         print(f'#### 매도 진행 . volume: {strategy.locked_volume}')
