@@ -59,7 +59,7 @@ class TradingViewController:
         for dic in cursor:
             strategy = Strategy(**dic)
         
-        if strategy is None or strategy.locked_volume is None:
+        if strategy is None or strategy.locked_volume is None or Strategy.locked_volume == "0.0":
             print("### locked volume is not exist")
             return
         
@@ -71,7 +71,7 @@ class TradingViewController:
             print('#### 매도 성공. DB insert')
             order = order_dao.create_order("sungyol", self._event.strategy_id, res['data'], self._event.price)
         else:
-            raise ExchangeApiError(message=res['data'])
+            return
 
         self.__check_update_order(order, strategy)
         
