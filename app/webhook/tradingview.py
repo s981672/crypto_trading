@@ -18,7 +18,7 @@ async def tradingview_webhook(request: Request):
     message =''
     for k,v in payload.items():
         message = message + f'{k} : {v}\n'
-    TelegramBot.send_message(f'트레이딩뷰 이벤트 수신 : {now}\n\n{message}')
+    TelegramBot().send_message(f'트레이딩뷰 이벤트 수신 : {now}\n\n{message}')
 
 
     tvEvent = TradingViewEvent(**payload)
