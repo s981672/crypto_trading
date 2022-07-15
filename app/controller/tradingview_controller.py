@@ -123,6 +123,7 @@ class TradingViewController:
                 self.__send_message(order.order.side, 
                                     order.expected_price, 
                                     self.__calc_funds(res['data']['trades']),
+                                    self.__calc_btc_price(res['data']['trades']),
                                     res['data']['executed_volume'])
             else:
                 time.sleep(1)
@@ -136,13 +137,22 @@ class TradingViewController:
     
     def __calc_funds(self, trades):
         prices = 0.0
+        avg = 0.0
+        if trades is not None:
+            for dic in trades:
+                prices += float(dic['price'])
+            avg = prices / len(trades)
+        return str(avg)
+    
+    def __calc_btc_price(self, trades):
+        prices = 0.0
         if trades is not None:
             for dic in trades:
                 prices += float(dic['funds'])
         
         return str(prices)
     
-    def __send_message(self, action, expected_price, executed_price, volume):
+    def __send_message(self, action, expected_price, executed_price, btc_price, volume):
         
         message = []
         message.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
@@ -151,7 +161,8 @@ class TradingViewController:
         elif action == "ask":
             message.append("[매도] 실행")
         message.append(f"요청 금액 : {expected_price}")
-        message.append(f"거래 금액 : {executed_price}")
+        message.append(f'거래 금액(BTC) : {btc_price}')
+        message.append(f"거래 금액(가격) : {executed_price}")
         message.append(f"거래량 : {volume}")
         
         send_message = '\n'.join(message)
