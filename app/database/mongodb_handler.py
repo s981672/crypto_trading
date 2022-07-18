@@ -12,7 +12,7 @@ class MongoDBHandler(DBHandler):
     def __init__(self, host="localhost/", db_name=None, collection_name=None):
         username = urllib.parse.quote_plus('bigmoneylab')
         password = urllib.parse.quote_plus('Wjswlgus2@22')
-        self._db_client = MongoClient(f"mongodb://{username}:{password}@{host}", port=27027)
+        self._db_client = MongoClient(f"mongodb://{host}", port=27027)
         
         if db_name is not None:
             self._db = self._db_client[db_name]
