@@ -1,7 +1,7 @@
 
 from pymongo import MongoClient
 from pymongo.cursor import CursorType
-from app.common.const import DBConst
+from common.const import DBConst
 
 from database.base_handler import DBHandler
 

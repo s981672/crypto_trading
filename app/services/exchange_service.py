@@ -2,7 +2,7 @@
 
 from copy import copy, deepcopy
 from typing import List
-from app.common.const import DBConst
+from common.const import DBConst
 from controller.tradingview_controller import TradingViewController
 from models.trading_view_event import TradingViewEvent
 from models.strategy import Strategy

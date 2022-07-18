@@ -1,7 +1,7 @@
 
 from datetime import datetime
 import time
-from app.common.const import DBConst
+from common.const import DBConst
 from pusher.telegram import TelegramBot
 from dao import strategy_dao
 from models.order import Order
