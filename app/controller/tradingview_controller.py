@@ -1,6 +1,7 @@
 
 from datetime import datetime
 import time
+from app.common.const import DBConst
 from pusher.telegram import TelegramBot
 from dao import strategy_dao
 from models.order import Order
@@ -26,7 +27,7 @@ def handle_trading_view_event(self, event):
 class TradingViewController:
     
     def __init__(self, event:TradingViewEvent = None):
-        self._db_handler=MongoDBHandler(db_name="bml_trader")
+        self._db_handler=MongoDBHandler(db_name=DBConst.DB_NAME)
         self._access = 'DMbAWg9xO9ObiEvBpn0RfCLxJ31d1xsqhdoodK7P'
         self._secret = 'fkUgm0agMZGO2efsSgxGYhXSRxYDzVD32ZdbbBnt'
         self._event = event

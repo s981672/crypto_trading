@@ -1,6 +1,7 @@
 
 from pymongo import MongoClient
 from pymongo.cursor import CursorType
+from app.common.const import DBConst
 
 from database.base_handler import DBHandler
 
@@ -8,7 +9,7 @@ from database.base_handler import DBHandler
 class MongoDBHandler(DBHandler):
     
     def __init__(self, host="localhost/", db_name=None, collection_name=None):
-        self._db_client = MongoClient(f"mongodb://{host}:27017")
+        self._db_client = MongoClient(f"mongodb://{host}:{DBConst.DB_PORT}")
         
         if db_name is not None:
             self._db = self._db_client[db_name]

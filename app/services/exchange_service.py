@@ -2,6 +2,7 @@
 
 from copy import copy, deepcopy
 from typing import List
+from app.common.const import DBConst
 from controller.tradingview_controller import TradingViewController
 from models.trading_view_event import TradingViewEvent
 from models.strategy import Strategy
@@ -115,6 +116,6 @@ class ExchangeService():
         
         TelegramBot().send_message(f'주문을 요청합니다.\n주문 결과:{res}')
         mongodb = MongoDBHandler("141.164.48.85")
-        mongodb.insert_item(deepcopy(res['data']), "bml_trader", "orders")
+        mongodb.insert_item(deepcopy(res['data']), DBConst.DB_NAME, "orders")
         
         return res
