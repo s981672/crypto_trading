@@ -75,10 +75,10 @@ class TradingViewController:
         if 'success' in res and res['success'] is True:
             print('#### 매도 성공. DB insert')
             order = order_dao.create_order("sungyol", self._event.strategy_id, res['data'], self._event.price)
+            self.__check_update_order(order, strategy)
         else:
             return
 
-        self.__check_update_order(order, strategy)
         
     
     def __buy(self):
@@ -93,10 +93,10 @@ class TradingViewController:
         if 'success' in res and res['success'] is True:
             print('#### 매수 성공. DB insert')
             order = order_dao.create_order("sungyol", self._event.strategy_id, res['data'], self._event.price)
+            self.__check_update_order(order)
         else:
             return
         
-        self.__check_update_order(order)
 
     def __contract_thread(self, order):
         # UUID를 기반으로 거래 정보를 조회하여 체결 여부 확인
