@@ -9,7 +9,7 @@ from database.base_handler import DBHandler
 class MongoDBHandler(DBHandler):
     
     def __init__(self, host="localhost/", db_name=None, collection_name=None):
-        self._db_client = MongoClient(f"mongodb://{host}", port={DBConst.DB_PORT})
+        self._db_client = MongoClient(f"mongodb://{host}", port=27027)
         
         if db_name is not None:
             self._db = self._db_client[db_name]
