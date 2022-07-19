@@ -9,10 +9,16 @@ from database.base_handler import DBHandler
 
 class MongoDBHandler(DBHandler):
     
+    
     def __init__(self, host="localhost/", db_name=None, collection_name=None):
-        username = urllib.parse.quote_plus('bigmoneylab')
+        username = urllib.parse.quote_plus('bml')
         password = urllib.parse.quote_plus('Wjswlgus2@22')
-        self._db_client = MongoClient(f"mongodb://{host}", port=27027)
+        self._db_client = MongoClient(f"mongodb://{host}",
+                                      username="bml",
+                                      password="Wjswlgus2@22",
+                                      authSource="bml",
+                                      authMechanism="SCRAM-SHA-256",
+                                      port=27027)
         
         if db_name is not None:
             self._db = self._db_client[db_name]
