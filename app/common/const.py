@@ -6,3 +6,4 @@ class DBConst:
     API_KEY_COLLECTION_NAME = 'api_key'
     STRATEGY_COLLECTION_NAME = 'strategy'
     ORDERS_COLLECTION_NAME = 'orders'
+    ORDER_BOOK_COLLECTION_NAME = 'orderbook'

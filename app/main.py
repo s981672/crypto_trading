@@ -1,12 +1,14 @@
 import uvicorn
 from fastapi import FastAPI, Depends
 from webhook import tradingview
-from routes import exchange_route
+from routes import exchange_route, quotation_route
+
 
 def create_app():
     app = FastAPI()
     
     app.include_router(exchange_route.router, tags=["Exchange"], prefix="/api")
+    app.include_router(quotation_route.router, tags=["Quotation"], prefix="/api")
     app.include_router(tradingview.router, tags=["WebHook"])
     return app
 

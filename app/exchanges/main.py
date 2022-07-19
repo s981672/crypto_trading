@@ -1,9 +1,13 @@
 
 
 from typing import List
+from exchanges.api.upbit.quotation_api import QuotationApi
 from exchanges.api.upbit.exchange_api import ExchangeApi
 from exchanges.error.errors import InvalidMarketNameError
 
+###############
+# EXCHANGE API
+###############
 
 def __get_exchange_api(
     exchange: str,
@@ -124,4 +128,25 @@ def post_order(
         return api.post_order(market, side, volume, price, ord_type, identifier)
     except Exception as e:
         # log 처리 후 raise
+        pass
+
+###############
+# QUOTATION API
+###############
+def __get_quotation_api(
+    exchange: str,
+):
+    if exchange == "upbit":
+        return QuotationApi()
+    
+    raise InvalidMarketNameError()
+
+def get_order_book(
+    exchange: str,
+    markets: List[str]
+):
+    try:
+        api = __get_quotation_api(exchange)
+        return api.get_order_book(markets)
+    except Exception as e:
         pass

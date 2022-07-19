@@ -17,7 +17,7 @@ class BaseApi(metaclass=ABCMeta):
         self.secret = secret
     
 
-class ExchangeApi(BaseApi):
+class BaseExchangeApi(BaseApi):
     @abstractmethod
     def get_accounts(self):
         """
@@ -83,6 +83,7 @@ class ExchangeApi(BaseApi):
     
     @abstractmethod
     def delete_order(
+        self,
         uuid: str,
         identifier, str
     ):
@@ -98,6 +99,7 @@ class ExchangeApi(BaseApi):
     
     @abstractmethod
     def req_order(
+        self,
         market: str,
         side: str,
         volume: float,
@@ -116,4 +118,10 @@ class ExchangeApi(BaseApi):
             ord_type (str): _description_
             identifier (str): _description_
         """
+        pass
+
+class BaseQuotationApi:
+    
+    @abstractmethod
+    def get_order_book(self):
         pass

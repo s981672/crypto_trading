@@ -6,7 +6,7 @@ from common.const import DBConst
 from controller.tradingview_controller import TradingViewController
 from models.trading_view_event import TradingViewEvent
 from models.strategy import Strategy
-from dao import strategy_dao
+from dao import strategy_dao, order_book_dao
 from database.mongodb_handler import MongoDBHandler
 from pusher.telegram import TelegramBot
 import exchanges.main as ex
@@ -113,9 +113,18 @@ class ExchangeService():
             price,
             identifier
         )
-        
-        TelegramBot().send_message(f'주문을 요청합니다.\n주문 결과:{res}')
-        mongodb = MongoDBHandler("141.164.48.85")
-        mongodb.insert_item(deepcopy(res['data']), DBConst.DB_NAME, "orders")
+                
+        return res
+
+    @staticmethod
+    def get_order_book(
+        exchange: str,
+        markets: List[str]
+    ):
+        res = ex.get_order_book(exchange, markets)
+
+        if res.status_code == 200:
+            order_book_dao.create_order_book(res.text)
         
         return res
+    

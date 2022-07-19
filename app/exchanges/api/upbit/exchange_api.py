@@ -4,6 +4,7 @@ from typing import List
 import uuid
 
 import jwt
+from exchanges.api.base_api import BaseExchangeApi
 from exchanges.common.url import UpbitUrl
 
 from exchanges.api.upbit.upbit_base_api import UpbitBaseApi

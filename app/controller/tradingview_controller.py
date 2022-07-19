@@ -1,6 +1,7 @@
 
 from datetime import datetime
 import time
+from dao import order_book_dao
 from common.const import DBConst
 from pusher.telegram import TelegramBot
 from dao import strategy_dao
@@ -104,6 +105,12 @@ class TradingViewController:
         # trade_count가 0 이면 취소가 된 것으로 간주.
         # 체결 여부 확인 후 결과를 Telegram으로 전송
         pass
+    
+    def __get_order_book(self):
+        res = ex.get_order_book("upbit", ['KRW-BTC'])
+        if res.status_code == 200:
+            order_book_dao.create_order_book(res.text)
+            
         
     def __check_update_order(self, order:Order, strategy:Strategy = None):
         
