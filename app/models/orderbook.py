@@ -20,6 +20,6 @@ class OrderBookData(BaseModel):
     
 
 class OrderBook(BaseModel):
-    created_dt: str
+    created_at: str
     order_book: List[OrderBookData]
     

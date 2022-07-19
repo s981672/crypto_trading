@@ -7,7 +7,7 @@ from common.const import DBConst
 from database.mongodb_handler import MongoDBHandler
 
 
-def get_order_order_book(created_at:str):
+def get_order_book(created_at:str):
     client = MongoDBHandler()
     
     query = {}
@@ -30,6 +30,7 @@ def create_order_book(order_book):
         created_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         order_book=order_book
     )
+    
     
     res = client.insert_item(orderBook.dict(), db_name=DBConst.DB_NAME, collection_name=DBConst.ORDER_BOOK_COLLECTION_NAME)
     return orderBook
