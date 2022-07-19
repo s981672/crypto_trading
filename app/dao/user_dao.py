@@ -1,6 +1,8 @@
 
 
 from datetime import datetime
+
+from pytz import timezone
 from error.error import InvalidParamError
 from common.const import DBConst
 from database.mongodb_handler import MongoDBHandler
@@ -26,8 +28,8 @@ def create_user(user_id, email, phone, budget):
     client = MongoDBHandler()
     
     user = User(
-        created_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        updated_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        created_at=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'),
+        updated_at=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'),
         user_id=user_id,
         email=email,
         phone=phone,
@@ -46,7 +48,7 @@ def update_user(user_id, email:str= None, phone:str = None, budget:str= None):
     
     update_value = {
         "$set" : {
-            "updated_at" : datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "updated_at" : datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'),
         }
     }
     if email is not None:

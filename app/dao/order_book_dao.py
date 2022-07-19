@@ -1,6 +1,8 @@
 
 
 from datetime import datetime
+
+from pytz import timezone
 from models.orderbook import OrderBook
 from error.error import InvalidParamError
 from common.const import DBConst
@@ -27,7 +29,7 @@ def create_order_book(order_book):
     client = MongoDBHandler()
     
     orderBook = OrderBook(
-        created_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        created_at=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'),
         order_book=order_book
     )
     

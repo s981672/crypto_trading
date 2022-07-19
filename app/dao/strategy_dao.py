@@ -1,6 +1,8 @@
 
 
 from datetime import datetime
+
+from pytz import timezone
 from models.strategy import Strategy
 from error.error import InvalidParamError
 from common.const import DBConst
@@ -30,8 +32,8 @@ def create_strategy(user_id, strategy_id, weight, budget, volume):
     
     strategy = Strategy(
         strategy_id=strategy_id,
-        created_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        updated_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        created_at=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'),
+        updated_at=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'),
         user_id=user_id,
         weight=weight,
         budget=budget,
@@ -50,7 +52,7 @@ def update_strategy(user_id, strategy_id, weight:int = None, budget:str = None, 
     
     update_value = {
         "$set" : {
-            "updated_at" : datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "updated_at" : datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'),
         }
     }
     if weight is not None:

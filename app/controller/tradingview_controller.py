@@ -2,6 +2,8 @@
 from datetime import datetime
 import json
 import time
+
+from pytz import timezone
 from dao import order_book_dao
 from common.const import DBConst
 from pusher.telegram import TelegramBot
@@ -175,7 +177,7 @@ class TradingViewController:
     def __send_message(self, action, expected_price, executed_price, btc_price, volume):
         
         message = []
-        message.append(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        message.append(datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'))
         if action == "bid":
             message.append("[매수] 실행")
         elif action == "ask":

@@ -1,6 +1,8 @@
 
 
 from datetime import datetime
+
+from pytz import timezone
 from error.error import InvalidParamError
 from common.const import DBConst
 from database.mongodb_handler import MongoDBHandler
@@ -33,8 +35,8 @@ def create_order(user_id, strategy_id, order_info, expected_price:str=None):
     client = MongoDBHandler()
     
     order = Order(
-        created_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        updated_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        created_at=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'),
+        updated_at=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'),
         user_id=user_id,
         strategy_id=strategy_id,
         uuid=order_info['uuid'],
@@ -55,7 +57,7 @@ def update_order(user_id, strategy_id, order, state):
     
     update_value = {
         "$set" : {
-            "updated_at" : datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "updated_at" : datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'),
             "order" : order
         }
     }
