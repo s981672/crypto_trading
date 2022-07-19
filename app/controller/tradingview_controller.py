@@ -1,5 +1,6 @@
 
 from datetime import datetime
+import json
 import time
 from dao import order_book_dao
 from common.const import DBConst
@@ -115,7 +116,8 @@ class TradingViewController:
     def __get_order_book(self):
         res = ex.get_order_book("upbit", ['KRW-BTC'])
         if res.status_code == 200:
-            order_book_dao.create_order_book(res.text)
+            jsonData = json.loads(res.text)
+            order_book_dao.create_order_book(jsonData)
             
         
     def __check_update_order(self, order:Order, strategy:Strategy = None):
