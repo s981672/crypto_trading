@@ -124,9 +124,9 @@ class ExchangeService():
     ):
         res = ex.get_order_book(exchange, markets)
 
-        if res.status_code == 200:
-            json_data = json.loads(res.text)
-            order_book_dao.create_order_book(json_data)
+        # if res.status_code == 200:
+        #     json_data = json.loads(res.text)
+        #     order_book_dao.create_order_book(json_data)
         
         return res
     

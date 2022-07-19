@@ -76,6 +76,9 @@ class TradingViewController:
         if 'success' in res and res['success'] is True:
             print('#### 매도 성공. DB insert')
             order = order_dao.create_order("sungyol", self._event.strategy_id, res['data'], self._event.price)
+            
+            self.__get_order_book()
+
             self.__check_update_order(order, strategy)
         else:
             return
@@ -94,6 +97,9 @@ class TradingViewController:
         if 'success' in res and res['success'] is True:
             print('#### 매수 성공. DB insert')
             order = order_dao.create_order("sungyol", self._event.strategy_id, res['data'], self._event.price)
+
+            self.__get_order_book()
+
             self.__check_update_order(order)
         else:
             return
