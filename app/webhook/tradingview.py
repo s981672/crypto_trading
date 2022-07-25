@@ -22,5 +22,5 @@ async def tradingview_webhook(request: Request):
 
 
     tvEvent = TradingViewEvent(**payload)
-    TradingViewController(event=tvEvent).run()
+    TradingViewController(event=tvEvent).newRun()
     return message

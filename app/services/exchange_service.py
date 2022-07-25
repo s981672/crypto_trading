@@ -46,18 +46,18 @@ class ExchangeService():
     ):
         res = ex.get_order_info(exchange, access, secret, uuid, identifier)
 
-        # event = {
-        #     "strategy_id" : "B000000",
-        #     "ticker" : "BTCKRW",
-        #     "order_id" : "Long#1",
-        #     "action" : "sell",
-        #     "contracts" : "0.003464",
-        #     "price" : "27120000",
-        #     "position_size" : "0.006928"
-        # }
+        event = {
+            "strategy_id" : "B000000",
+            "ticker" : "BTCKRW",
+            "order_id" : "L1",
+            "action" : "sell",
+            "contracts" : "0.003464",
+            "price" : "27120000",
+            "position_size" : "0.006928"
+        }
 
-        # tvEvent = TradingViewEvent(**event)
-        # TradingViewController(event=tvEvent).run()
+        tvEvent = TradingViewEvent(**event)
+        TradingViewController(event=tvEvent).newRun()
 
         return res
 

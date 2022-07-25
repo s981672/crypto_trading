@@ -4,6 +4,7 @@ import json
 import time
 
 from pytz import timezone
+from algorithm.b000000 import B000000
 from dao import order_book_dao
 from common.const import DBConst
 from pusher.telegram import TelegramBot
@@ -35,6 +36,12 @@ class TradingViewController:
         self._access = 'DMbAWg9xO9ObiEvBpn0RfCLxJ31d1xsqhdoodK7P'
         self._secret = 'fkUgm0agMZGO2efsSgxGYhXSRxYDzVD32ZdbbBnt'
         self._event = event
+        
+    def newRun(self):
+        #parsing
+        algorithm = B000000(self._event)
+        algorithm.run_algorithm()
+        
         
     def run(self):
         """

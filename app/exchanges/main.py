@@ -110,6 +110,7 @@ def delete_order(
         pass
     
 def post_order(
+    *,
     exchange: str,
     access: str,
     secret: str,
