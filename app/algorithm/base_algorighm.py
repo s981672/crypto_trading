@@ -121,6 +121,7 @@ class BaseAlgorithm(metaclass=ABCMeta):
         orderData['algorithm_id']=algorithm_list.algorithm_id
         
         order: Order = Order(**orderData)
+        order.created_at = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
         self._db_handler.insert_item(order)
 
         return order
@@ -149,6 +150,7 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 print(f'### Trade: {tradeData}')
                 for data in tradeData:
                     trade = Trade(**data)
+                    trade.created_at = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
                     trade.order_uuid = uuid
                     self._db_handler.insert_item(trade)
 
