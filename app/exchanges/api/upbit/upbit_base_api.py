@@ -1,5 +1,6 @@
 
 import hashlib
+import logging
 from typing import Dict, Union
 from urllib.parse import unquote, urlencode
 import uuid
@@ -11,6 +12,8 @@ from exchanges.api.base_api import BaseApi
 
 
 class UpbitBaseApi(BaseApi):
+    
+    logger = logging.getLogger('sLogger')
     
     def __get_header(self, **kwargs):
         query_hash: str = self.__encode_kwargs(**kwargs)
@@ -77,9 +80,9 @@ class UpbitBaseApi(BaseApi):
         headers = self.__get_header(**kwargs)
         params = self.__get_params(**kwargs)
         
+        self.logger.info(f'[REQUEST] URL : {url}, PARAM : {params}, HEADER : {headers}')
         res = api(url, params=params, headers=headers)
-        
-        print(f'HTTP STATUS_CODE : {res.status_code}')
+        self.logger.info(f'[RESPONSE] URL : {url}, CODE : {res.status_code}, DATA : {res.json()}')
         
         return {
             'success' : res.status_code in [HTTPCode.HTTP_200_OK, HTTPCode.HTTP_201_CREATED],
