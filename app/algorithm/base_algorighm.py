@@ -18,9 +18,10 @@ from database.mariadb_handler import MariadbHandler
 from models.trading_view_event import TradingViewEvent
 import exchanges.main as ex
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('sLogger')
 
 class BaseAlgorithm(metaclass=ABCMeta):
+    
     def __init__(self, event:TradingViewEvent = None):
         self._db_handler = MariadbHandler()
         self._access = 'DMbAWg9xO9ObiEvBpn0RfCLxJ31d1xsqhdoodK7P'
@@ -68,18 +69,26 @@ class BaseAlgorithm(metaclass=ABCMeta):
         # algorithm에 있는 값을 기반으로 현재 구매 가능한 금액을 얻어온다.
         price = self.__calc_buy_price(algorithm_list)
 
-        print(f'Buy : exchange:{exchange}, market:{market}, price:{price}')
+        logger.info(f'Buy : exchange:{exchange}, market:{market}, price:{price}')
         
         # 1. 지정된 금액을 기준으로 매수 요청.
-        res = ex.post_order(
-            exchange=exchange, 
-            access=self._access, 
-            secret=self._secret, 
-            market=market, 
-            side='bid', 
-            ord_type=ord_type,
-            price=price)
-               
+        try:
+            res = ex.post_order(
+                exchange=exchange, 
+                access=self._access, 
+                secret=self._secret, 
+                market=market, 
+                side='bid', 
+                ord_type=ord_type,
+                price=price)
+        except Exception as e:
+            logger.error('[BUY]POST ORDER ERROR : {e}')
+            return               
+        
+        if res is None or res['success'] == False :
+            logger.error('[BUY]POST ORDER FAILED : {res}')
+            return
+        
         # 2. order db에 추가
         order = self.__create_order_item(res, algorithm_list)
         
@@ -101,16 +110,24 @@ class BaseAlgorithm(metaclass=ABCMeta):
         
         volume = self.__calc_sell_volume(algorithm_list)
         
-        print(f'Sell : exchange:{exchange}, market:{market}, volume:{volume}')
+        logger.info(f'Sell : exchange:{exchange}, market:{market}, volume:{volume}')
 
-        res = ex.post_order(
-            exchange=exchange, 
-            access=self._access, 
-            secret=self._secret, 
-            market=market, 
-            side='ask', 
-            ord_type=ord_type,
-            volume=volume)
+        try:
+            res = ex.post_order(
+                exchange=exchange, 
+                access=self._access, 
+                secret=self._secret, 
+                market=market, 
+                side='ask', 
+                ord_type=ord_type,
+                volume=volume)
+        except Exception as e:
+            logger.error('[SELL]POST ORDER ERROR : {e}')
+            return               
+        
+        if res is None or res['success'] == False :
+            logger.error('[SELL]POST ORDER FAILED : {res}')
+            return
         
         # 2. order db에 추가
         order = self.__create_order_item(res, algorithm_list)
@@ -154,12 +171,10 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 uuid=uuid,
                 )
             
-            print(res, res['success'], res['data']['state'])
             if res['success'] is True and (res['data']['state'] == "cancel" or res['data']['state'] == "done"):
                 check_completed = True
                 # Trade 정보를 DB에 쌓는다
                 tradeData = res['data']['trades']
-                print(f'### Trade: {tradeData}')
                 for data in tradeData:
                     data['created_at'] = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
                     trade = Trade(**data)
@@ -218,7 +233,6 @@ class BaseAlgorithm(metaclass=ABCMeta):
         
         for data in tradeData:
             # 주문인 경우에는 금액이 줄어들고 volume이 늘어난다.
-            print(f"#### VOLUME : {data['volume']}")
             if side == 'bid':
                 total_money -= double(data['funds'])
                 total_volume += double(data['volume'])
