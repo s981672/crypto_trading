@@ -17,7 +17,11 @@ async def tradingview_webhook(request: Request):
     TradingView WebHook 수신
     """
     now = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
-    payload = await request.json()
+    try:
+        payload = await request.json()
+    except Exception as e:
+        logger.error(f'[TV_HOOK] EVENT PARSING ERROR : {payload}')
+        return
 
     logger.info(f'[TV_HOOK] Receive WebHook : {now}')
     logger.info(f'[TV_HOOK] EVENT : {payload}')
