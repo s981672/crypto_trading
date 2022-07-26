@@ -46,12 +46,12 @@ class BaseAlgorithm(metaclass=ABCMeta):
         
         # 수수료가 0.05% 이기 때문에 해당 금액이 계산되어 매수 금액이 측정 되어야 함.
         enable_money = current_money / 1.0005
-        logger.info(f"# Enable Order Price: {enable_money}")
+        logger.info(f"Enable Order Price: {enable_money}")
         return str(enable_money)
     
     def __calc_sell_volume(self, algorithm_list:AlgorithmList):
         current_volume = double(algorithm_list.executed_volume)
-        logger.info(f"# Enable Sell Order Volume : {current_volume}")
+        logger.info(f"Enable Sell Order Volume : {current_volume}")
         return str(current_volume)
     
     def buy(self, *, exchange:str, market:str, ord_type:str = "price", algorithm_list:AlgorithmList):
@@ -82,11 +82,11 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 ord_type=ord_type,
                 price=price)
         except Exception as e:
-            logger.error('[BUY]POST ORDER ERROR : {e}')
+            logger.error(f'[BUY]POST ORDER ERROR : {e}')
             return               
         
         if res is None or res['success'] == False :
-            logger.error('[BUY]POST ORDER FAILED : {res}')
+            logger.error(f'[BUY]POST ORDER FAILED : {res}')
             return
         
         # 2. order db에 추가
@@ -122,11 +122,11 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 ord_type=ord_type,
                 volume=volume)
         except Exception as e:
-            logger.error('[SELL]POST ORDER ERROR : {e}')
+            logger.error(f'[SELL]POST ORDER ERROR : {e}')
             return               
         
         if res is None or res['success'] == False :
-            logger.error('[SELL]POST ORDER FAILED : {res}')
+            logger.error(f'[SELL]POST ORDER FAILED : {res}')
             return
         
         # 2. order db에 추가
