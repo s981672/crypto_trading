@@ -12,7 +12,7 @@ class BaseExchangeError(Exception):
         self.__dict__ = ctx
 
     def __str__(self) -> str:
-        return self.msg.format(**self.__dict__)
+        return self.message.format(**self.__dict__)
 
 
 class InvalidMarketNameError(BaseExchangeError):
@@ -22,3 +22,5 @@ class InvalidMarketNameError(BaseExchangeError):
     
 class ExchangeAPIError(BaseExchangeError):
     name = "Exchange API Error"
+    code = 700
+    message = "거래소 API에서 오류가 발생하였습니다."

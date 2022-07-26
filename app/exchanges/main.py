@@ -1,6 +1,8 @@
 
 
+import logging
 from typing import List
+from exchanges.error.errors import ExchangeAPIError
 from exchanges.api.upbit.quotation_api import QuotationApi
 from exchanges.api.upbit.exchange_api import ExchangeApi
 from exchanges.error.errors import InvalidMarketNameError
@@ -31,8 +33,7 @@ def get_accounts(
         api = __get_exchange_api(exchange, access, secret)
         return api.get_accounts()
     except Exception as e:
-        # log 처리 후 raise
-        pass
+        raise ExchangeAPIError(message=f'{e}')
     
 
 def get_orders_chance(
@@ -48,8 +49,7 @@ def get_orders_chance(
         api = __get_exchange_api(exchange, access, secret)
         return api.get_orders_chance(market)
     except Exception as e:
-        # log 처리 후 raise
-        pass
+        raise ExchangeAPIError(message=f'{e}')
 
 
 def get_order_info(
@@ -66,8 +66,7 @@ def get_order_info(
         api = __get_exchange_api(exchange, access, secret)
         return api.get_order_info(uuid, identifier)
     except Exception as e:
-        # log 처리 후 raise
-        pass
+        raise ExchangeAPIError(message=f'{e}')
 
 def get_orders_info(
     exchange: str,
@@ -89,8 +88,7 @@ def get_orders_info(
         api = __get_exchange_api(exchange, access, secret)
         return api.get_orders_info(market, uuids, identifiers, state, states, page, limit, order_by)
     except Exception as e:
-        # log 처리 후 raise
-        pass
+        raise ExchangeAPIError(message=f'{e}')
 
 def delete_order(
     exchange: str,
@@ -106,8 +104,7 @@ def delete_order(
         api = __get_exchange_api(exchange, access, secret)
         return api.delete_order(uuid, identifier)
     except Exception as e:
-        # log 처리 후 raise
-        pass
+        raise ExchangeAPIError(message=f'{e}')
     
 def post_order(
     *,
@@ -128,8 +125,7 @@ def post_order(
         api = __get_exchange_api(exchange, access, secret)
         return api.post_order(market, side, volume, price, ord_type, identifier)
     except Exception as e:
-        # log 처리 후 raise
-        pass
+        raise ExchangeAPIError(message=f'{e}')
 
 ###############
 # QUOTATION API
@@ -150,4 +146,4 @@ def get_order_book(
         api = __get_quotation_api(exchange)
         return api.get_order_book(markets)
     except Exception as e:
-        pass
+        raise ExchangeAPIError(message=f'{e}')
