@@ -132,9 +132,8 @@ class BaseAlgorithm(metaclass=ABCMeta):
         orderData = orderData['data']
         orderData['acc_id']=algorithm_list.acc_id
         orderData['algorithm_id']=algorithm_list.algorithm_id
-        
+        orderData['created_at']=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
         order: Order = Order(**orderData)
-        order.created_at = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
         self._db_handler.insert_item(order)
 
         return order
@@ -162,8 +161,8 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 tradeData = res['data']['trades']
                 print(f'### Trade: {tradeData}')
                 for data in tradeData:
+                    data['created_at'] = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
                     trade = Trade(**data)
-                    trade.created_at = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
                     trade.order_uuid = uuid
                     self._db_handler.insert_item(trade)
 
@@ -171,9 +170,11 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 orderData = res['data']
                 orderData['acc_id']=algorithm_list.acc_id
                 orderData['algorithm_id']=algorithm_list.algorithm_id
+                orderData['created_at']=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
+                orderData['updated_at']=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
                 # del orderData['trades']
                 order: Order = Order(**orderData)
-                print(f'########### ORDER :{order.to_dict()}')
+
                 self._db_handler.update_item({'uuid':uuid}, order)
                 
                 # algorithm list를 업데이트 한다.
