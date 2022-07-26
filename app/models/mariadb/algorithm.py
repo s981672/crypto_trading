@@ -14,6 +14,7 @@ class Algorithm(Base, BaseModel):
     market = Column(String)
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
+    max_division = Column(Integer)
 
     def __init__(self, **entries):
         self.__dict__.update(entries)
