@@ -1,4 +1,5 @@
 
+import logging
 from algorithm.base_algorighm import BaseAlgorithm
 from models.mariadb.algorithm import Algorithm
 from models.mariadb.algorithm_list import AlgorithmList
@@ -7,6 +8,7 @@ from models.trading_view_event import TradingViewEvent
 
 
 class B000000(BaseAlgorithm):
+    logger = logging.getLogger('sLogger')
     
     def run_algorithm(self):
         """
@@ -23,20 +25,22 @@ class B000000(BaseAlgorithm):
             "algorithm_id":self._event.strategy_id
             })
         if self._alg is None or len(self._alg) == 0:
-            print('## 전략이 없음.')
+            self.logger.warning(f'# No Algorighm. strategy_id : {self._event.strategy_id}, order_id : {self._event.order_id}')
             return
 
         if self._alg_list is None or len(self._alg_list) == 0:
-            print('## 전략이 없음.')
+            self.logger.warning(f'# No Algorighm. strategy_id : {self._event.strategy_id}, order_id : {self._event.order_id}')
             return
 
-        print('## 전략 검색됨')
+        self.logger.debug(f'Find Strategy')
+        
         if self._event.action == 'buy':
             self.__buy()            
         else:
             self.__sell()
 
     def __buy(self):
+        self.logger.debug(f'Buy. exchange:{self._alg[0].exchange}, market:{self._alg[0].market}')
         self.buy(
             exchange=self._alg[0].exchange,
             market=self._alg[0].market,
@@ -46,11 +50,11 @@ class B000000(BaseAlgorithm):
         
     def __sell(self):
         volume = self._alg_list[0].executed_volume
-        print(f'VOLUME : {volume}')
         if volume is None or volume == "0.0":
-            print('### 매도할 position이 없음')
+            self.logger.warning(f'There is no Volume. exchange:{self._alg[0].exchange}, market:{self._alg[0].market}')
             return
         
+        self.logger.debug(f'Sell. exchange:{self._alg[0].exchange}, market:{self._alg[0].market}, volume:{volume}')
         self.sell(
             exchange=self._alg[0].exchange,
             market=self._alg[0].market,
