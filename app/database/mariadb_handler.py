@@ -3,10 +3,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from sqlalchemy.ext.declarative import declarative_base
+from database.base_handler import DBHandler
 
 from error.error import InvalidParamError
 
-class MariadbHandler():
+class MariadbHandler(DBHandler):
     def __init__(self, hostName:str = "127.0.0.1"):
         self.engine = create_engine("mariadb+mariadbconnector://bml_admin:Wjswlgus2022!@localhost:3306/bml")
         self.conn = self.engine.connect()

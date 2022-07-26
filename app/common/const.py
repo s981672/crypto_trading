@@ -7,3 +7,7 @@ class DBConst:
     STRATEGY_COLLECTION_NAME = 'strategy'
     ORDERS_COLLECTION_NAME = 'orders'
     ORDER_BOOK_COLLECTION_NAME = 'orderbook'
+    
+    
+class ExchangeInfo:
+    UPBIT_COMMISSION_RATE = 0.05

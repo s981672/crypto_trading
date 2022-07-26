@@ -32,6 +32,15 @@ class BaseAlgorithm(metaclass=ABCMeta):
         pass
 
     def __calc_buy_price(self, algorithm_list:AlgorithmList):
+        """
+        주문이 가능한 금액을 계산한다.
+
+        Args:
+            algorithm_list (AlgorithmList): 알고리즘 리스트
+
+        Returns:
+            _type_: 주문이 가능한 금액
+        """
         current_money = double(algorithm_list.total_money)
         
         # 수수료가 0.05% 이기 때문에 해당 금액이 계산되어 매수 금액이 측정 되어야 함.
@@ -111,6 +120,10 @@ class BaseAlgorithm(metaclass=ABCMeta):
         
     
     def __create_order_item(self, orderData:Dict, algorithm_list:AlgorithmList) -> Order:
+        """
+        주문 정보를 DB에 쌓는다.
+        """
+        
         if orderData is None or orderData['success'] is False:
             print(f'주문 실패 : {orderData}')
             return
