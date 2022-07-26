@@ -4,7 +4,7 @@ from pytz import timezone
 from controller.tradingview_controller import TradingViewController
 from models.trading_view_event import TradingViewEvent
 from pusher.telegram import TelegramBot
-import datetime
+from datetime import datetime
 
 router = APIRouter()
 
