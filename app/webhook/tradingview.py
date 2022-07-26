@@ -20,7 +20,7 @@ async def tradingview_webhook(request: Request):
     try:
         payload = await request.json()
     except Exception as e:
-        logger.error(f'[TV_HOOK] EVENT PARSING ERROR : {payload}')
+        logger.error(f'[TV_HOOK] EVENT PARSING ERROR')
         return
 
     logger.info(f'[TV_HOOK] Receive WebHook : {now}')
