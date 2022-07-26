@@ -41,6 +41,11 @@ class MariadbHandler(DBHandler):
         session.add_all(items)
         session.commit()
     
+    def find_item(self, entities, condition=None):
+        query_result = self.find_items(entities, condition)
+        if len(query_result) > 0 :
+            return query_result[0]
+    
     def find_items(self, entities, condition=None):
         if condition is None:
             condition = {}
