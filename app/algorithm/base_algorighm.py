@@ -1,9 +1,11 @@
 
 
 from abc import ABCMeta, abstractclassmethod, abstractmethod
+import json
 from datetime import datetime
 from logging import Logger, log, warning
 import logging
+import os
 import time
 from typing import Dict
 from numpy import double
@@ -24,9 +26,16 @@ class BaseAlgorithm(metaclass=ABCMeta):
     
     def __init__(self, event:TradingViewEvent = None):
         self._db_handler = MariadbHandler()
-        self._access = 'DMbAWg9xO9ObiEvBpn0RfCLxJ31d1xsqhdoodK7P'
-        self._secret = 'fkUgm0agMZGO2efsSgxGYhXSRxYDzVD32ZdbbBnt'
+        self.__get_keys()
         self._event = event
+
+    def __get_keys(self):
+        basedir = os.path.dirname(os.path.abspath(__file__))
+        with open(f'{basedir}/../keys.json') as f:
+            config = json.load(f)
+
+        self._access = config['upbit']['access']
+        self._secret = config['upbit']['secret']
 
     @abstractmethod
     def run_algorithm(self):
