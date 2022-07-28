@@ -208,10 +208,7 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 self.__get_balance_list(exchange, order.uuid, order.acc_id)
                 
                 # Telegram을 통해 메시지를 전송
-                self.__send_message(order.side, 
-                    res['data']['executed_volume'],
-                    tradeData
-                    )
+                self.__send_message(algorithm_list, orderData)
 
             else:
                 time.sleep(1)
@@ -304,21 +301,54 @@ class BaseAlgorithm(metaclass=ABCMeta):
         
     #     TelegramBot().send_message(send_message)
         
-    def __send_message(self, action, volume, trades):
-        
+    def __send_message(self, algorithm_list:AlgorithmList, orderData):
+        """
+        [Trade]
+        2022-02-02 08:02:14                 => 날짜
+        account_id : U123456                => acc_id , algorithm_list에 존재
+        algo id : B712503                   => algorithm_id, algorithm_list에 존재
+        ticker : ETHKRW                     => order response의 market 값
+        order_id : L[2]                     => sub_algorithm_id, algorithm_list에 존재
+        action : buy                        => order response의 side 값으로 판단.
+        매수시 총체결목표금액 : 10000 KRW     => order response 의 price
+        매수시 실체결금액 : 9900 KRW          => trades의 funds 합계
+        (매도시 총체결목표계약수 : 0.00031      => order response의 volume
+        매도시 실체결계약수 :  0.00030)         => order response의 executed_volume
+        1차체결 price:                          => trade의 price
+        1차체결 contracts (계약수) : 0.00032    => trade의 voluem
+        1차체결 trade amout (거래금액) : 5500   => trade의 funds
+        """
         message = []
+        message.append("[Trade]")
         message.append(datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'))
-        if action == "bid":
-            message.append("[매수] 실행")
-        elif action == "ask":
-            message.append("[매도] 실행")
+        message.append(f"account_id : {algorithm_list.acc_id}")
+        message.append(f"alog_id : {algorithm_list.algorithm_id}")
+        message.append(f"ticker : {orderData['market']}")
+        message.append(f"order_id : {algorithm_list.sub_algorithm_id}")
         
-        if trades is not None:
-            for dic in trades:
-                message.append(f"거래 금액({dic['market']}) : {dic['price']}")
-                message.append(f"거래 금액(가격) : {dic['funds']}")
-
-        message.append(f"거래량 : {volume}")
+        total_price = 0.0
+        total_volume = 0.0
+        total_funds = 0.0
+        trade_message = []
+        for idx, trade in enumerate(orderData['trades'], 1):
+            trade_message.append(f"{idx}차 체결 price: {trade['price']}")
+            trade_message.append(f"{idx}차 체결 contracts(계약수): {trade['volume']}")
+            trade_message.append(f"{idx}차 체결 trade amount(거래금액): {trade['funds']}")
+            total_price += float(trade['price'])
+            total_volume += float(trade['volume'])
+            total_funds += float(trade['funds'])
+            
+        if orderData['side'] == 'bid':
+            message.append(f"action : buy")    
+            message.append(f"매수시 총체결목표금액: {orderData['price']}")
+            message.append(f"매수시 실체결금액: {str(total_funds)}")
+        else:
+            message.append(f"action : sell")    
+            message.append(f"매도시 총체결목표계약수: {orderData['volume']}")
+            message.append(f"매도시 실체결계약수: {str(total_volume)}")
+        
+        message.extend(trade_message)
+        
         
         send_message = '\n'.join(message)
         

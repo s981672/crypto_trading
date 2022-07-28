@@ -25,12 +25,26 @@ async def tradingview_webhook(request: Request):
 
     logger.info(f'[TV_HOOK] Receive WebHook : {now}')
     logger.info(f'[TV_HOOK] EVENT : {payload}')
-    message =''
-    for k,v in payload.items():
-        message = message + f'{k} : {v}\n'
-    TelegramBot().send_message(f'트레이딩뷰 이벤트 수신 : {now}\n\n{message}')
 
+    message = __get_message(payload)
+    TelegramBot().send_message(f'[Signal]\n{now}\n{message}')
 
     tvEvent = TradingViewEvent(**payload)
     TradingViewController(event=tvEvent).newRun()
+
+    return message
+
+
+def __get_message(payload):
+    message =''
+    ignoreKeys = ['contracts', 'position_size']
+    for k,v in payload.items():
+        # starategy_id 는 alog id로 이름을 변경한다.
+        if k == 'strategy_id' :
+            k = 'alog id'
+        # 필요없는 메시지는 보내지 않도록 한다.
+        if k in ignoreKeys:
+            continue     
+        message = message + f'{k} : {v}\n'
+        
     return message
