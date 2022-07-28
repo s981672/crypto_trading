@@ -18,8 +18,6 @@ class AlgorithmList(Base, BaseModel):
     total_money = Column(String)
     executed_volume = Column(String)
     working = Column(Boolean)
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime)
     
     def __init__(self, **entries):
         self.__dict__.update(entries)

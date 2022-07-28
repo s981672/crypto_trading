@@ -14,7 +14,6 @@ class Trade(Base, BaseModel):
     price = Column(String)
     volume = Column(String)
     funds = Column(String)
-    created_at = Column(DateTime)
     side = Column(String)
     trend = Column(String)
     order_uuid = Column(String, ForeignKey(Order.uuid))

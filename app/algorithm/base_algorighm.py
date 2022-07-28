@@ -158,7 +158,6 @@ class BaseAlgorithm(metaclass=ABCMeta):
         orderData = orderData['data']
         orderData['acc_id']=algorithm_list.acc_id
         orderData['algorithm_id']=algorithm_list.algorithm_id
-        orderData['created_at']=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
         order: Order = Order(**orderData)
         self._db_handler.insert_item(order)
 
@@ -185,7 +184,6 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 # Trade 정보를 DB에 쌓는다
                 tradeData = res['data']['trades']
                 for data in tradeData:
-                    data['created_at'] = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
                     trade = Trade(**data)
                     trade.order_uuid = uuid
                     self._db_handler.insert_item(trade)
@@ -194,8 +192,6 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 orderData = res['data']
                 orderData['acc_id']=algorithm_list.acc_id
                 orderData['algorithm_id']=algorithm_list.algorithm_id
-                orderData['created_at']=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
-                orderData['updated_at']=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
                 # del orderData['trades']
                 order: Order = Order(**orderData)
 
@@ -219,7 +215,6 @@ class BaseAlgorithm(metaclass=ABCMeta):
         (total_money, total_volume) = self.__calc_total_volume_and_price(orderData, algorithm_list)
         algorithm_list.total_money = str(total_money)
         algorithm_list.executed_volume = str(total_volume)
-        algorithm_list.updated_at = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
         
         self._db_handler.update_item(
             {'algorithm_id':algorithm_list.algorithm_id,
@@ -262,7 +257,6 @@ class BaseAlgorithm(metaclass=ABCMeta):
         
         for data in res['data']:
             balance = Balance(**data)
-            balance.created_at = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
             balance.order_uuid = order_uuid
             balance.acc_id = acc_id
             self._db_handler.insert_item(balance)
@@ -310,13 +304,11 @@ class BaseAlgorithm(metaclass=ABCMeta):
         ticker : ETHKRW                     => order response의 market 값
         order_id : L[2]                     => sub_algorithm_id, algorithm_list에 존재
         action : buy                        => order response의 side 값으로 판단.
-        매수시 총체결목표금액 : 10000 KRW     => order response 의 price
-        매수시 실체결금액 : 9900 KRW          => trades의 funds 합계
-        (매도시 총체결목표계약수 : 0.00031      => order response의 volume
-        매도시 실체결계약수 :  0.00030)         => order response의 executed_volume
-        1차체결 price:                          => trade의 price
-        1차체결 contracts (계약수) : 0.00032    => trade의 voluem
-        1차체결 trade amout (거래금액) : 5500   => trade의 funds
+        체결율(체결금액/주문금액) : 90%(5000/5500)     => order response 의 price
+        체결율(체결계약수/주문계약수) : 100%*0.00012/0.00012)         => trades의 funds 합계
+        1차 가격 :  2500000                 => trade의 price
+        1차 금액 :  6000                    => trade의 funds
+        1차 계약수 :  0.00032               dddddddddddd=> trade의 funds
         """
         message = []
         message.append("[Trade]")

@@ -12,8 +12,6 @@ class Funding(Base, BaseModel):
     funding = Column(String)
     drawing = Column(String)
     acc_id = Column(String, ForeignKey(Account.acc_id))
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime)
 
     def __init__(self, **entries):
         self.__dict__.update(entries)

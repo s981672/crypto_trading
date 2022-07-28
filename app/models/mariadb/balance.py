@@ -17,7 +17,6 @@ class Balance(Base, BaseModel):
     avg_buy_price = Column(String)
     avg_buy_price_modified = Column(Integer)
     unit_currency = Column(String)
-    created_at = Column(DateTime)
     order_uuid = Column(String, ForeignKey(Order.uuid))
     acc_id = Column(String, ForeignKey(Account.acc_id))
 

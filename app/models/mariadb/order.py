@@ -16,7 +16,6 @@ class Order(Base, BaseModel):
     ord_type = Column(String)
     price = Column(String)
     state = Column(String)
-    created_at = Column(DateTime)
     reserved_fee = Column(String)
     remaining_fee = Column(String)
     paid_fee = Column(String)
@@ -40,7 +39,6 @@ class Order(Base, BaseModel):
             "ord_type" : self.ord_type,
             "price" : self.price,
             "state" : self.state,
-            "created_at" : self.created_at,
             "reserved_fee" : self.reserved_fee,
             "remaining_fee" : self.remaining_fee,
             "paid_fee" : self.paid_fee,

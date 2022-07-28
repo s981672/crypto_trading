@@ -12,8 +12,6 @@ class Algorithm(Base, BaseModel):
     type = Column(String)
     exchange = Column(String)
     market = Column(String)
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime)
     max_division = Column(Integer)
 
     def __init__(self, **entries):
