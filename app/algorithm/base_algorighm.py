@@ -209,9 +209,9 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 
                 # Telegram을 통해 메시지를 전송
                 self.__send_message(order.side, 
-                    self.__calc_funds(tradeData),
-                    self.__calc_btc_price(tradeData),
-                    res['data']['executed_volume'])
+                    res['data']['executed_volume'],
+                    tradeData
+                    )
 
             else:
                 time.sleep(1)
@@ -220,9 +220,9 @@ class BaseAlgorithm(metaclass=ABCMeta):
 
     def __update_algorithm_list(self, orderData:Dict, algorithm_list:AlgorithmList):
         (total_money, total_volume) = self.__calc_total_volume_and_price(orderData, algorithm_list)
-        print(total_volume, total_money)
         algorithm_list.total_money = str(total_money)
         algorithm_list.executed_volume = str(total_volume)
+        algorithm_list.updated_at = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
         
         self._db_handler.update_item(
             {'algorithm_id':algorithm_list.algorithm_id,
@@ -288,7 +288,23 @@ class BaseAlgorithm(metaclass=ABCMeta):
         
         return str(prices)
 
-    def __send_message(self, action, executed_price, btc_price, volume):
+    # def __send_message(self, action, executed_price, btc_price, volume):
+        
+    #     message = []
+    #     message.append(datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'))
+    #     if action == "bid":
+    #         message.append("[매수] 실행")
+    #     elif action == "ask":
+    #         message.append("[매도] 실행")
+    #     message.append(f'거래 금액(BTC) : {btc_price}')
+    #     message.append(f"거래 금액(가격) : {executed_price}")
+    #     message.append(f"거래량 : {volume}")
+        
+    #     send_message = '\n'.join(message)
+        
+    #     TelegramBot().send_message(send_message)
+        
+    def __send_message(self, action, volume, trades):
         
         message = []
         message.append(datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'))
@@ -296,10 +312,14 @@ class BaseAlgorithm(metaclass=ABCMeta):
             message.append("[매수] 실행")
         elif action == "ask":
             message.append("[매도] 실행")
-        message.append(f'거래 금액(BTC) : {btc_price}')
-        message.append(f"거래 금액(가격) : {executed_price}")
+        
+        if trades is not None:
+            for dic in trades:
+                message.append(f"거래 금액({dic['market']}) : {dic['price']}")
+                message.append(f"거래 금액(가격) : {dic['funds']}")
+
         message.append(f"거래량 : {volume}")
         
         send_message = '\n'.join(message)
         
-        TelegramBot().send_message(send_message)
+        TelegramBot().send_message(send_message)        
