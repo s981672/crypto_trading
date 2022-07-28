@@ -342,13 +342,13 @@ class BaseAlgorithm(metaclass=ABCMeta):
             
         if orderData['side'] == 'bid':
             message.append(f"action : buy")    
-            rate = int(total_funds / float(orderData['price']) * 100 )
+            rate = round(total_funds / float(orderData['price']) * 100 ,2)
             message.append(f"체결율(체결금액/주문금액) : {rate}% ({total_funds}/{orderData['price']})")
             # message.append(f"매수시 총체결목표금액: {orderData['price']}")
             # message.append(f"매수시 실체결금액: {str(total_funds)}")
         else:
             message.append(f"action : sell")    
-            rate = int(total_volume / float(orderData['volume']) * 100)
+            rate = round(total_volume / float(orderData['volume']) * 100 ,2)
             message.append(f"체결율(체결계약수/주문계약수) : {rate}% ({total_volume}/{orderData['volume']})")
             # message.append(f"매도시 총체결목표계약수: {orderData['volume']}")
             # message.append(f"매도시 실체결계약수: {str(total_volume)}")
