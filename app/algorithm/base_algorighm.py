@@ -331,21 +331,27 @@ class BaseAlgorithm(metaclass=ABCMeta):
         total_funds = 0.0
         trade_message = []
         for idx, trade in enumerate(orderData['trades'], 1):
-            trade_message.append(f"{idx}차 체결 price: {trade['price']}")
-            trade_message.append(f"{idx}차 체결 contracts(계약수): {trade['volume']}")
-            trade_message.append(f"{idx}차 체결 trade amount(거래금액): {trade['funds']}")
+            trade_message.append(f"{idx}차 가격: {trade['price']}")
+            if orderData['side'] == 'bid':
+                trade_message.append(f"{idx}차 금액: {trade['funds']}")
+            else:
+                trade_message.append(f"{idx}차 계약수: {trade['volume']}")
             total_price += float(trade['price'])
             total_volume += float(trade['volume'])
             total_funds += float(trade['funds'])
             
         if orderData['side'] == 'bid':
             message.append(f"action : buy")    
-            message.append(f"매수시 총체결목표금액: {orderData['price']}")
-            message.append(f"매수시 실체결금액: {str(total_funds)}")
+            rate = int(total_funds / float(orderData['price']) * 100 )
+            message.append(f"체결율(체결금액/주문금액) : {rate}% ({total_funds}/{orderData['price']})")
+            # message.append(f"매수시 총체결목표금액: {orderData['price']}")
+            # message.append(f"매수시 실체결금액: {str(total_funds)}")
         else:
             message.append(f"action : sell")    
-            message.append(f"매도시 총체결목표계약수: {orderData['volume']}")
-            message.append(f"매도시 실체결계약수: {str(total_volume)}")
+            rate = int(total_volume / float(orderData['volume']) * 100)
+            message.append(f"체결율(체결계약수/주문계약수) : {rate}% ({total_volume}/{orderData['volume']})")
+            # message.append(f"매도시 총체결목표계약수: {orderData['volume']}")
+            # message.append(f"매도시 실체결계약수: {str(total_volume)}")
         
         message.extend(trade_message)
         
