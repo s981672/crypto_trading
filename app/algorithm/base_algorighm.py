@@ -314,7 +314,7 @@ class BaseAlgorithm(metaclass=ABCMeta):
         message.append("[Trade]")
         message.append(datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S'))
         message.append(f"account_id : {algorithm_list.acc_id}")
-        message.append(f"alog_id : {algorithm_list.algorithm_id}")
+        message.append(f"algo_id : {algorithm_list.algorithm_id}")
         message.append(f"ticker : {orderData['market']}")
         message.append(f"order_id : {algorithm_list.sub_algorithm_id}")
         
