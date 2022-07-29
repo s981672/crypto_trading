@@ -151,7 +151,7 @@ class BaseAlgorithm(metaclass=ABCMeta):
         """
         
         if orderData is None or orderData['success'] is False:
-            print(f'주문 실패 : {orderData}')
+            logger.error(f'OrderData is Invalidate. orderData:{orderData}')
             return
         
         # 2. order db에 추가
