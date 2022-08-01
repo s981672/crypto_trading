@@ -5,7 +5,7 @@ import uvicorn
 from fastapi import FastAPI, Depends, Request
 from middlewares.http_middleware import HttpMiddleware
 from webhook import tradingview
-from routes import exchange_route, quotation_route
+from routes import exchange_route, quotation_route, test_route
 from starlette.middleware.base import BaseHTTPMiddleware
 
 def create_app():
@@ -17,6 +17,7 @@ def create_app():
     app.include_router(exchange_route.router, tags=["Exchange"], prefix="/api")
     app.include_router(quotation_route.router, tags=["Quotation"], prefix="/api")
     app.include_router(tradingview.router, tags=["WebHook"])
+    app.include_router(test_route.router, tags=["TEST"])
     
     # Middleware 등록
     http_middleware = HttpMiddleware()

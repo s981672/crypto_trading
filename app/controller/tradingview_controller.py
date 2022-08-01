@@ -4,7 +4,8 @@ import json
 import time
 
 from pytz import timezone
-from algorithm.b000000 import B000000
+from algorithm.b7125 import B7125
+from algorithm.b7157 import B7157
 from dao import order_book_dao
 from common.const import DBConst
 from pusher.telegram import TelegramBot
@@ -39,7 +40,16 @@ class TradingViewController:
         
     def newRun(self):
         #parsing
-        algorithm = B000000(self._event)
+        algorithm = None
+        if self._event.strategy_id.startswith('B7125'):
+            algorithm = B7125(self._event)
+        elif self._event.strategy_id.startswith('B7157'):
+            algorithm = B7157(self._event)
+            
+        if algorithm is None:
+            print('### Algorithm is None')
+            return
+        
         algorithm.run_algorithm()
         
         

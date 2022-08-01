@@ -7,7 +7,7 @@ from database.mariadb_handler import MariadbHandler
 from models.trading_view_event import TradingViewEvent
 
 
-class B000000(BaseAlgorithm):
+class B7125(BaseAlgorithm):
     logger = logging.getLogger('sLogger')
     
     def run_algorithm(self):

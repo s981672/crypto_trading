@@ -16,6 +16,7 @@ class AlgorithmList(Base, BaseModel):
     sub_algorithm_id = Column(String)
     initial_money = Column(String)
     total_money = Column(String)
+    current_division = Column(Integer)
     executed_volume = Column(String)
     working = Column(Boolean)
     

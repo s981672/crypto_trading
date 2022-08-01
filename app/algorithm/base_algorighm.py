@@ -63,7 +63,7 @@ class BaseAlgorithm(metaclass=ABCMeta):
         logger.info(f"Enable Sell Order Volume : {current_volume}")
         return str(current_volume)
     
-    def buy(self, *, exchange:str, market:str, ord_type:str = "price", algorithm_list:AlgorithmList):
+    def buy(self, *, exchange:str, market:str, ord_type:str = "price", algorithm_list:AlgorithmList, buy_price:str = None):
         
         """
         매수 요청.
@@ -76,7 +76,10 @@ class BaseAlgorithm(metaclass=ABCMeta):
         """
         
         # algorithm에 있는 값을 기반으로 현재 구매 가능한 금액을 얻어온다.
-        price = self.__calc_buy_price(algorithm_list)
+        if buy_price is None:
+            price = self.__calc_buy_price(algorithm_list)
+        else:
+            price = buy_price
 
         logger.info(f'Buy : exchange:{exchange}, market:{market}, price:{price}')
         
@@ -106,7 +109,7 @@ class BaseAlgorithm(metaclass=ABCMeta):
         
         
         
-    def sell(self, *, exchange:str, market:str, ord_type:str = "market", algorithm_list:AlgorithmList):
+    def sell(self, *, exchange:str, market:str, ord_type:str = "market", algorithm_list:AlgorithmList, executed_volume:str = None):
         """
         매도 요청.
         1. algorithm_list의 volume 값을 기준으로 매도를 요청한다.
@@ -117,7 +120,10 @@ class BaseAlgorithm(metaclass=ABCMeta):
         6. 계좌 정보를 요청하여 balance 정보를 db에 쌓는다.
         """
         
-        volume = self.__calc_sell_volume(algorithm_list)
+        if executed_volume is None:
+            volume = self.__calc_sell_volume(algorithm_list)
+        else:
+            volume = executed_volume
         
         logger.info(f'Sell : exchange:{exchange}, market:{market}, volume:{volume}')
 
@@ -216,6 +222,11 @@ class BaseAlgorithm(metaclass=ABCMeta):
         algorithm_list.total_money = str(total_money)
         algorithm_list.executed_volume = str(total_volume)
         
+        if orderData['side'] == 'bid':
+            algorithm_list.current_division += 1
+        else:
+            algorithm_list.current_division = 0
+        
         self._db_handler.update_item(
             {'algorithm_id':algorithm_list.algorithm_id,
              'sub_algorithm_id':algorithm_list.sub_algorithm_id},
@@ -243,6 +254,8 @@ class BaseAlgorithm(metaclass=ABCMeta):
                 total_volume -= double(data['volume'])
 
         return (total_money, total_volume)
+
+        
             
     def __get_balance_list(self, exchange:str, order_uuid:str, acc_id:str):
         res = ex.get_accounts(
