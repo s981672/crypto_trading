@@ -24,11 +24,11 @@ class B7157(BaseAlgorithm):
             "algorithm_id":self._event.strategy_id
             })
         if self._alg is None or len(self._alg) == 0:
-            self.logger.warning(f'# No Algorighm. strategy_id : {self._event.strategy_id}, order_id : {self._event.order_id}')
+            self.logger.warning(f'# No Algorighm. strategy_id : {self._event.strategy_id}')
             return
 
         if self._alg_list is None or len(self._alg_list) == 0:
-            self.logger.warning(f'# No Algorighm. strategy_id : {self._event.strategy_id}, order_id : {self._event.order_id}')
+            self.logger.warning(f'# No Algorighm. strategy_id : {self._event.strategy_id}')
             return
 
         self.logger.debug(f'Find Strategy')

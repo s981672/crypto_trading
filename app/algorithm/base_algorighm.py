@@ -329,7 +329,7 @@ class BaseAlgorithm(metaclass=ABCMeta):
         message.append(f"account_id : {algorithm_list.acc_id}")
         message.append(f"algo_id : {algorithm_list.algorithm_id}")
         message.append(f"ticker : {orderData['market']}")
-        message.append(f"order_id : {algorithm_list.sub_algorithm_id}")
+        # message.append(f"order_id : {algorithm_list.sub_algorithm_id}")
         
         total_price = 0.0
         total_volume = 0.0

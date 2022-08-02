@@ -15,7 +15,7 @@ router = APIRouter()
 async def webhook_event(
     strategy_id: str = "B000000",
     ticker: str = "KRW-BTC",
-    order_id: str = "L[1]",
+    order_id: str = None,
     action: str = "buy",
     contracts: str = "0.00001",
     price: str = "1000000",
